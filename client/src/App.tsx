@@ -188,8 +188,12 @@ export default function App() {
 
   // Hook pour enregistrer la navigation
   const handleRouteChange = (route: string) => {
-    appIntelligence.recordNavigation(route);
-    globalQuantumOrchestrator.recordUserAction('navigation', { route });
+    try {
+      appIntelligence.recordNavigation(route);
+      globalQuantumOrchestrator.recordUserAction('navigation', { route });
+    } catch (error) {
+      console.warn('Navigation recording warning:', error);
+    }
   };
 
   if (!appReady) {
@@ -212,20 +216,18 @@ export default function App() {
       <TooltipProvider>
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 quantum-component">
           <Switch>
-            <Route 
-              path="/" 
-              component={() => {
+            <Route path="/">
+              {() => {
                 handleRouteChange('/');
                 return <Home />;
-              }} 
-            />
-            <Route 
-              path="/:rest*" 
-              component={() => {
+              }}
+            </Route>
+            <Route path="/:rest*">
+              {() => {
                 handleRouteChange('/not-found');
                 return <NotFound />;
-              }} 
-            />
+              }}
+            </Route>
           </Switch>
           <Toaster />
         </div>

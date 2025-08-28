@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef } from "react";
 import ParticleBackground from "@/components/particle-background";
 import CreationPanel from "@/components/creation-panel";
@@ -23,11 +22,11 @@ class AdaptiveInterfaceIntelligence {
 
   private initializeInterfaceIntelligence(): void {
     console.log("🧠 ADAPTIVE INTERFACE INTELLIGENCE 2.0 - Initializing neural interface...");
-    
+
     this.analyzeUserBehavior();
     this.optimizeInterfaceLayout();
     this.initializePredictiveAdaptation();
-    
+
     console.log("🚀 ADAPTIVE INTERFACE INTELLIGENCE 2.0 DEPLOYED SUCCESSFULLY!");
     console.log("🧠 Behavioral Analysis Active | ⚡ Predictive Adaptation | 🎯 User Optimization");
   }
@@ -81,13 +80,13 @@ class AdaptiveInterfaceIntelligence {
     const mouseScore = (patterns.mouseMovement.precision + patterns.mouseMovement.speed) / 2;
     const clickScore = patterns.clickBehavior.clickAccuracy;
     const scrollScore = patterns.scrollPatterns.scrollSpeed > 400 ? 90 : 70;
-    
+
     return Math.round((mouseScore + clickScore + scrollScore) / 3);
   }
 
   private optimizeInterfaceLayout(): void {
     const behaviorScore = this.adaptiveMetrics.get('behavior_analysis_score') || 75;
-    
+
     // Optimisation basée sur le comportement
     if (behaviorScore > 85) {
       this.userPreferences.set('layout_complexity', 'advanced');
@@ -112,7 +111,7 @@ class AdaptiveInterfaceIntelligence {
 
   private predictUserNeeds(): void {
     const currentBehavior = this.behaviorPatterns.get('current_session');
-    
+
     if (currentBehavior?.timeOnElements.creationPanel > 120) {
       // Utilisateur passe beaucoup de temps sur la création
       this.userPreferences.set('suggested_action', 'optimize_creation_flow');
@@ -143,10 +142,10 @@ class PerformanceOptimizationEngine {
 
   private initializePerformanceOptimization(): void {
     console.log("🚀 PERFORMANCE OPTIMIZATION ENGINE 2.0 - Initializing quantum performance...");
-    
+
     this.monitorRealTimePerformance();
     this.initializeOptimizationStrategies();
-    
+
     console.log("⚡ Performance Engine: ACTIVE ✅");
     console.log("🎯 Real-time Monitoring: ACTIVE ✅");
   }
@@ -196,7 +195,7 @@ class PerformanceOptimizationEngine {
     const renderPerf = this.performanceMetrics.get('render_performance') || 60;
     const memoryEff = 100 - (this.performanceMetrics.get('memory_usage') || 50);
     const cpuEff = 100 - (this.performanceMetrics.get('cpu_usage') || 10);
-    
+
     return Math.round((
       (loadTime < 300 ? 100 : 100 - (loadTime - 300) / 10) * 0.3 +
       renderPerf * 0.3 +
@@ -219,10 +218,10 @@ class AutonomousStateManager {
 
   private initializeAutonomousState(): void {
     console.log("🧠 AUTONOMOUS STATE MANAGER 2.0 - Initializing intelligent state management...");
-    
+
     this.setupInitialState();
     this.initializeAutonomousLearning();
-    
+
     console.log("🤖 Autonomous State: ACTIVE ✅");
     console.log("🧠 Learning Patterns: ACTIVE ✅");
   }
@@ -264,7 +263,7 @@ class AutonomousStateManager {
 
   private makeAutonomousDecisions(): void {
     const recentPerformance = this.calculateRecentPerformance();
-    
+
     if (recentPerformance < 80) {
       this.autonomousDecisions.set('optimize_performance', true);
       this.applicationState.set('performance_mode', 'turbo');
@@ -282,7 +281,7 @@ class AutonomousStateManager {
 
   private updateLearningPatterns(): void {
     const sessionDuration = Date.now() - parseInt(this.applicationState.get('user_session_id').split('-')[1], 16);
-    
+
     this.learningPatterns.set('session_duration', sessionDuration);
     this.learningPatterns.set('optimization_count', this.autonomousDecisions.size);
     this.learningPatterns.set('learning_efficiency', this.calculateLearningEfficiency());
@@ -292,7 +291,7 @@ class AutonomousStateManager {
     const decisions = this.autonomousDecisions.size;
     const patterns = this.learningPatterns.size;
     const stateChanges = this.stateHistory.length;
-    
+
     return Math.round((decisions * 10 + patterns * 5 + stateChanges) / 3);
   }
 
@@ -338,10 +337,20 @@ export default function QuantumPortalHome() {
   // Référence au système quantique global
   const quantumSystem = globalQuantumOrchestrator;
 
+  // Références aux systèmes IA
+  const interfaceIntelligenceRef = useRef<AdaptiveInterfaceIntelligence | null>(null);
+  const performanceEngineRef = useRef<PerformanceOptimizationEngine | null>(null);
+  const stateManagerRef = useRef<AutonomousStateManager | null>(null);
+
   // Initialisation du portail quantique
   useEffect(() => {
     console.log("🚀 QUANTUM PORTAL HOME 2.0 - Initializing with perfect backend sync...");
-    
+
+    // Initialisation des systèmes IA
+    interfaceIntelligenceRef.current = new AdaptiveInterfaceIntelligence();
+    performanceEngineRef.current = new PerformanceOptimizationEngine();
+    stateManagerRef.current = new AutonomousStateManager();
+
     // Enregistrement du composant Home dans le système quantique
     quantumSystem.registerQuantumComponent('home-portal', {
       type: 'main-portal',
@@ -351,29 +360,22 @@ export default function QuantumPortalHome() {
 
     // Récupération du status de synchronisation
     const systemStatus = quantumSystem.getSystemStatus();
-    setPortalStatus({
-      signature: systemStatus.orchestratorSignature,
-      aiEnginesActive: 12 + 4, // Backend + Frontend
-      adaptiveIntelligence: true,
-      performanceOptimization: true,
-      autonomousLearning: true,
-      quantumStatus: `SYNCHRONIZED_${systemStatus.backendSync.synchronizationLevel}%`
-    });
-
-    console.log(`🎯 Home Portal synchronized at ${systemStatus.backendSync.synchronizationLevel}% with backend`);izationEngine();
-    stateManagerRef.current = new AutonomousStateManager();
 
     // Configuration du statut du portail
     const signature = `QPH-${Date.now().toString(16).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-    
+
     setPortalStatus({
       signature,
-      aiEnginesActive: 3,
+      aiEnginesActive: systemStatus.backendSync ? 16 : 3, // Backend + Frontend si connecté
       adaptiveIntelligence: true,
       performanceOptimization: true,
       autonomousLearning: true,
-      quantumStatus: "OPERATIONAL_MAXIMUM_POWER"
+      quantumStatus: systemStatus.backendSync ? 
+        `SYNCHRONIZED_${systemStatus.backendSync.synchronizationLevel}%` : 
+        "OPERATIONAL_MAXIMUM_POWER"
     });
+
+    console.log(`🎯 Home Portal initialized with ${systemStatus.backendSync ? 'backend sync' : 'autonomous mode'}`);
 
     // Mise à jour continue des métriques
     const metricsInterval = setInterval(() => {
@@ -417,7 +419,7 @@ export default function QuantumPortalHome() {
               QUANTUM PORTAL HOME 2.0
             </h1>
           </div>
-          
+
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto font-light">
             Interface révolutionnaire avec{" "}
             <span className="text-gradient font-semibold">
