@@ -458,8 +458,9 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
 QuantumInput.displayName = "QuantumInput";
 
 // 🌟 Export du composant révolutionnaire
-export { QuantumInput };
-export { QuantumInput as Input }; // Export comme Input pour compatibilité
+const Input = QuantumInput;
+
+export { QuantumInput, Input };
 export default QuantumInput;
 
 console.log(`
