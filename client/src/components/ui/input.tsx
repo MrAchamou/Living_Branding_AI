@@ -459,6 +459,7 @@ QuantumInput.displayName = "QuantumInput";
 
 // 🌟 Export du composant révolutionnaire
 export { QuantumInput };
+export { QuantumInput as Input }; // Export comme Input pour compatibilité
 export default QuantumInput;
 
 console.log(`
