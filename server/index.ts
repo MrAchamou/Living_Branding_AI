@@ -11,6 +11,7 @@ import { z } from "zod";
 import { setupRoutes } from "./routes.js";
 import { setupVite } from "./vite.js";
 import { globalAIErrorEngine } from "./ai-error-correction.js";
+import { globalDependencyManager } from "./dependency-manager.js";
 
 const app = express();
 const server = createServer(app);
@@ -163,6 +164,9 @@ app.get("/api/ai-error-engine/analytics", (req, res) => {
 if (process.env.NODE_ENV !== "production") {
   await setupVite(app, server);
 }
+
+// 🔧 Vérification autonome des dépendances
+await globalDependencyManager.ensureDependenciesAvailable();
 
 // 🚀 Démarrage du serveur
 server.listen(PORT, "0.0.0.0", () => {
