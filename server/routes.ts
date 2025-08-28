@@ -844,7 +844,7 @@ class QuantumRoutesCore {
 
 const quantumRoutes = new QuantumRoutesCore();
 
-export function registerRoutes(app: express.Application): void {
+export function setupRoutes(app: express.Application): void {
   console.log("🚀 QUANTUM ROUTES ENGINE 2.0 - Registering intelligent routes...");
 
   // Middleware intelligent global
