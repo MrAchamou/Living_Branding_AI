@@ -1,9 +1,11 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { storage } from "./storage";
-import {
-  insertBrandCreationSchema,
-  insertFeedbackSchema
+import { 
+  insertBrandCreationSchema, 
+  insertFeedbackSchema,
+  AIEngines,
+  processWithAI
 } from "@shared/schema";
 import quantumDeliveryEngine from "./delivery-engine";
 import { z } from "zod";
@@ -859,12 +861,12 @@ export function registerRoutes(app: express.Application): void {
       const storageInsights = await storageConnector.getStorageInsights('createBrandCreation', validatedData);
 
       // Traitement IA complet avec insights du storage
-      // const aiEnhancedData = await processWithAI(validatedData); // Removed as per instructions
+      const aiEnhancedData = await processWithAI(validatedData); // Used the imported processWithAI
 
       // Création avec données enrichies par l'IA
       const brandCreation = await storage.createBrandCreation({
         ...validatedData,
-        // ...aiEnhancedData, // Removed as per instructions
+        ...aiEnhancedData, // Used the imported processWithAI
         quantumStorageInsights: storageInsights
       });
 
@@ -956,11 +958,11 @@ export function registerRoutes(app: express.Application): void {
       const changeAnalysis = await routesInstance.analyzeChanges(existingBrand, req.body);
 
       // Traitement IA des modifications
-      // const aiEnhancedUpdate = await processWithAI(req.body); // Removed as per instructions
+      const aiEnhancedUpdate = await processWithAI(req.body); // Used the imported processWithAI
 
       const updatedBrandCreation = await storage.updateBrandCreation(req.params.id, {
         ...req.body,
-        // ...aiEnhancedUpdate, // Removed as per instructions
+        ...aiEnhancedUpdate, // Used the imported processWithAI
         quantumUpdateMetadata: {
           changeAnalysis,
           previousVersion: existingBrand.quantumSignature,
@@ -1060,23 +1062,23 @@ export function registerRoutes(app: express.Application): void {
       }
 
       // Analyse IA complète du potentiel
-      // const nameAnalysis = AIEngines.genesis.analyzeCompanyName(companyName); // Removed as per instructions
-      // const creativeDNA = AIEngines.genesis.generateCreativeDNA(companyName, sector || "Intelligence Artificielle"); // Removed as per instructions
-      // const hypnoticPower = AIEngines.hypnotic.calculateHypnoticPower(creativeDNA, companyName, sector || "Intelligence Artificielle"); // Removed as per instructions
-      // const ceoImpact = AIEngines.ceo.calculateCEOImpactScore(creativeDNA, hypnoticPower); // Removed as per instructions
+      const nameAnalysis = AIEngines.genesis.analyzeCompanyName(companyName); // Used AIEngines
+      const creativeDNA = AIEngines.genesis.generateCreativeDNA(companyName, sector || "Intelligence Artificielle"); // Used AIEngines
+      const hypnoticPower = AIEngines.hypnotic.calculateHypnoticPower(creativeDNA, companyName, sector || "Intelligence Artificielle"); // Used AIEngines
+      const ceoImpact = AIEngines.ceo.calculateCEOImpactScore(creativeDNA, hypnoticPower); // Used AIEngines
 
       const analysisResult = {
         potential: {
-          // revolutionaryFactor: creativeDNA.revolutionaryFactor, // Removed as per instructions
-          // hypnoticPower, // Removed as per instructions
-          // ceoImpact, // Removed as per instructions
-          // quantumSignature: creativeDNA.quantumSignature, // Removed as per instructions
-          // globalAppeal: creativeDNA.futurePotential.globalAppeal, // Removed as per instructions
-          // marketDisruption: creativeDNA.futurePotential.marketDisruption * 100 // Removed as per instructions
+          revolutionaryFactor: creativeDNA.revolutionaryFactor, // Used AIEngines
+          hypnoticPower, // Used AIEngines
+          ceoImpact, // Used AIEngines
+          quantumSignature: creativeDNA.quantumSignature, // Used AIEngines
+          globalAppeal: creativeDNA.futurePotential.globalAppeal, // Used AIEngines
+          marketDisruption: creativeDNA.futurePotential.marketDisruption * 100 // Used AIEngines
         },
-        // analysis: nameAnalysis, // Removed as per instructions
-        // prediction: ceoImpact > 90 ? "REVOLUTIONARY SUCCESS GUARANTEED" : // Removed as per instructions
-        //            ceoImpact > 80 ? "HIGH SUCCESS PROBABILITY" : "OPTIMIZATION RECOMMENDED", // Removed as per instructions
+        analysis: nameAnalysis, // Used AIEngines
+        prediction: ceoImpact > 90 ? "REVOLUTIONARY SUCCESS GUARANTEED" : // Used AIEngines
+                   ceoImpact > 80 ? "HIGH SUCCESS PROBABILITY" : "OPTIMIZATION RECOMMENDED", // Used AIEngines
         confidence: 98.3,
         quantumIntelligence: {
           processingTime: Date.now(),
@@ -1580,90 +1582,6 @@ async function generateImprovementSuggestions(brandCreation: any): Promise<strin
 
   return suggestions;
 }
-
-// async function analyzeChanges(existing: any, updates: any): Promise<any> { // Duplicate function, original is inside routesInstance
-//   return {
-//     significantChanges: Object.keys(updates).filter(key =>
-//       existing[key] !== updates[key]
-//     ),
-//     impactLevel: Object.keys(updates).length > 3 ? "high" : "moderate",
-//     reprocessingNeeded: updates.companyName !== existing.companyName ||
-//                        updates.sector !== existing.sector
-//   };
-// }
-
-// async function analyzeFeedbackSentiment(feedback: string): Promise<any> { // Duplicate function, original is inside routesInstance
-//   // Analyse de sentiment IA basique (à améliorer)
-//   const positiveWords = ["excellent", "amazing", "fantastic", "perfect", "love", "great"];
-//   const negativeWords = ["terrible", "awful", "hate", "bad", "poor", "worst"];
-
-//   const words = feedback.toLowerCase().split(/\s+/);
-//   let score = 0.5; // Neutre
-
-//   words.forEach(word => {
-//     if (positiveWords.includes(word)) score += 0.1;
-//     if (negativeWords.includes(word)) score -= 0.1;
-//   });
-
-//   return {
-//     score: Math.max(0, Math.min(1, score)),
-//     classification: score > 0.7 ? "positive" : score < 0.3 ? "negative" : "neutral",
-//     confidence: 0.85,
-//     keyPhrases: words.filter(word =>
-//       positiveWords.includes(word) || negativeWords.includes(word)
-//     )
-//   };
-// }
-
-// function extractKeywords(text: string): string[] { // Duplicate function, original is inside routesInstance
-//   const words = text.toLowerCase().split(/\s+/);
-//   const importantWords = words.filter(word =>
-//     word.length > 3 && !["the", "and", "but", "for", "with"].includes(word)
-//   );
-
-//   return importantWords.slice(0, 5); // Top 5 mots-clés
-// }
-
-// function generateActionableInsights(feedback: string): string[] { // Duplicate function, original is inside routesInstance
-//   const insights = [];
-
-//   if (feedback.toLowerCase().includes("slow")) {
-//     insights.push("Consider performance optimization");
-//   }
-//   if (feedback.toLowerCase().includes("design")) {
-//     insights.push("Focus on visual improvements");
-//   }
-//   if (feedback.toLowerCase().includes("easy")) {
-//     insights.push("Maintain current UX approach");
-//   }
-
-//   return insights;
-// }
-
-// async function analyzeCollectiveFeedbacks(feedbacks: any[]): Promise<any> { // Duplicate function, original is inside routesInstance
-//   if (feedbacks.length === 0) {
-//     return {
-//       averageSentiment: 0.5,
-//       keyInsights: ["No feedbacks to analyze"],
-//       recommendations: ["Encourage more user feedback"]
-//     };
-//   }
-
-//   const averageSentiment = feedbacks.reduce((sum, f) =>
-//     sum + (f.sentimentScore || 0.5), 0) / feedbacks.length;
-
-//   return {
-//     averageSentiment,
-//     keyInsights: [
-//       `${feedbacks.length} total feedbacks analyzed`,
-//       `Average sentiment: ${(averageSentiment * 100).toFixed(1)}%`,
-//       `AI confidence: 94.2%`
-//     ],
-//     recommendations: averageSentiment > 0.7 ?
-//       ["Maintain current approach", "Scale successful features"] :
-//       ["Investigate pain points", "Improve user experience"]
-//   };
-// }
 
 console.log(`
 🚀 ====================================================

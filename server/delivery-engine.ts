@@ -1711,7 +1711,7 @@ interface DeliveryStatus {
 const quantumDeliveryEngine = new QuantumDeliveryEngine();
 
 export default quantumDeliveryEngine;
-export { QuantumDeliveryEngine };
+// QuantumDeliveryEngine class is already exported above
 
 console.log(`
 🚀 ====================================================
