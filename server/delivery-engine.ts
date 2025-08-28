@@ -1028,7 +1028,7 @@ with sophistication that reflects innovation excellence in design and branding.
 - **${transparencyText} :** ${vp9WithAlphaChannelText}
 
 ### ${providedResolutionsText}
-${analysis.optimizationPlan.videoOptimization.resolutions.map(res => `- **${res}** : ${res === '4k' ? ${optimizedForPremiumDisplayText} : res === '1080p' ? ${optimizedForModernWebText} : ${optimizedForMobileEmailText}}`).join('\n')}
+${analysis.optimizationPlan.videoOptimization.resolutions.map(res => `- **${res}** : ${res === '4k' ? optimizedForPremiumDisplayText : res === '1080p' ? optimizedForModernWebText : optimizedForMobileEmailText}`).join('\n')}
 
 ### ${webPerformanceText}
 - **${loadingTimeText} :** < 2 secondes
