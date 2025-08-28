@@ -290,158 +290,9 @@ class QuantumErrorIntelligence {
   }
 }
 
-// 🚀 QUANTUM CACHE OPTIMIZATION ENGINE
-class QuantumCacheIntelligence {
-  private cacheMetrics: Map<string, any> = new Map();
-  private accessPatterns: Map<string, any> = new Map();
-  private smartCache: Map<string, any> = new Map();
-
-  constructor() {
-    console.log("🚀 QUANTUM CACHE INTELLIGENCE - Initializing adaptive caching...");
-    this.initializeCacheOptimization();
-  }
-
-  private initializeCacheOptimization(): void {
-    // Cache optimization every 2 minutes
-    setInterval(() => {
-      this.optimizeCacheStrategies();
-    }, 120000);
-
-    // Cache cleanup every 5 minutes
-    setInterval(() => {
-      this.performIntelligentCleanup();
-    }, 300000);
-  }
-
-  recordCacheAccess(key: string, hit: boolean, dataSize: number): void {
-    if (!this.cacheMetrics.has(key)) {
-      this.cacheMetrics.set(key, {
-        hits: 0,
-        misses: 0,
-        totalSize: 0,
-        accessTimes: [],
-        hitRatio: 0
-      });
-    }
-
-    const metrics = this.cacheMetrics.get(key)!;
-    
-    if (hit) {
-      metrics.hits++;
-    } else {
-      metrics.misses++;
-      metrics.totalSize = dataSize;
-    }
-
-    metrics.accessTimes.push(Date.now());
-    metrics.hitRatio = metrics.hits / (metrics.hits + metrics.misses);
-
-    // Keep only last 20 access times
-    if (metrics.accessTimes.length > 20) {
-      metrics.accessTimes.shift();
-    }
-
-    this.updateAccessPatterns(key, metrics);
-  }
-
-  private updateAccessPatterns(key: string, metrics: any): void {
-    const pattern = {
-      frequency: this.calculateAccessFrequency(metrics.accessTimes),
-      hitRatio: metrics.hitRatio,
-      priority: this.calculatePriority(metrics),
-      lastAccess: Date.now()
-    };
-
-    this.accessPatterns.set(key, pattern);
-  }
-
-  private calculateAccessFrequency(accessTimes: number[]): number {
-    if (accessTimes.length < 2) return 0;
-
-    const intervals = [];
-    for (let i = 1; i < accessTimes.length; i++) {
-      intervals.push(accessTimes[i] - accessTimes[i-1]);
-    }
-
-    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
-    return 1 / (avgInterval / 1000); // Frequency per second
-  }
-
-  private calculatePriority(metrics: any): number {
-    const hitRatioWeight = metrics.hitRatio * 0.4;
-    const frequencyWeight = Math.min(metrics.accessTimes.length / 20, 1) * 0.3;
-    const recencyWeight = this.calculateRecencyScore(metrics.accessTimes) * 0.3;
-
-    return hitRatioWeight + frequencyWeight + recencyWeight;
-  }
-
-  private calculateRecencyScore(accessTimes: number[]): number {
-    if (accessTimes.length === 0) return 0;
-
-    const lastAccess = Math.max(...accessTimes);
-    const timeSinceLastAccess = Date.now() - lastAccess;
-    
-    // Score decreases exponentially with time
-    return Math.exp(-timeSinceLastAccess / 300000); // 5 minutes half-life
-  }
-
-  private optimizeCacheStrategies(): void {
-    for (const [key, pattern] of this.accessPatterns.entries()) {
-      if (pattern.priority > 0.7) {
-        this.smartCache.set(key, {
-          strategy: 'aggressive_cache',
-          ttl: 3600000, // 1 hour
-          priority: 'high'
-        });
-      } else if (pattern.priority > 0.3) {
-        this.smartCache.set(key, {
-          strategy: 'standard_cache',
-          ttl: 1800000, // 30 minutes
-          priority: 'medium'
-        });
-      } else {
-        this.smartCache.set(key, {
-          strategy: 'minimal_cache',
-          ttl: 300000, // 5 minutes
-          priority: 'low'
-        });
-      }
-    }
-  }
-
-  private performIntelligentCleanup(): void {
-    const lowPriorityKeys = Array.from(this.accessPatterns.entries())
-      .filter(([_, pattern]) => pattern.priority < 0.2)
-      .map(([key, _]) => key);
-
-    lowPriorityKeys.forEach(key => {
-      this.accessPatterns.delete(key);
-      this.cacheMetrics.delete(key);
-      this.smartCache.delete(key);
-    });
-
-    if (lowPriorityKeys.length > 0) {
-      console.log(`🧹 Intelligent cleanup: Removed ${lowPriorityKeys.length} low-priority cache entries`);
-    }
-  }
-
-  getCacheStrategy(key: string): any {
-    return this.smartCache.get(key) || {
-      strategy: 'standard_cache',
-      ttl: 1800000,
-      priority: 'medium'
-    };
-  }
-}
-
-// ====================================================================
-// QUANTUM API INTELLIGENCE HUB - MAIN ORCHESTRATOR
-// ====================================================================
-
 // Revolutionary AI Engines
 const quantumPredictor = new QuantumRequestPredictor();
 const errorIntelligence = new QuantumErrorIntelligence();
-const cacheIntelligence = new QuantumCacheIntelligence();
 
 // Enhanced error handling with quantum intelligence
 async function quantumThrowIfResNotOk(res: Response, url: string) {
@@ -484,10 +335,6 @@ export async function apiRequest(
     
     // Analyze request pattern for quantum learning
     quantumPredictor.analyzeRequestPattern(url, method, data, responseTime);
-    
-    // Record cache metrics
-    cacheIntelligence.recordCacheAccess(`${method}:${url}`, false, 
-      res.headers.get('content-length') ? parseInt(res.headers.get('content-length')!) : 0);
 
     await quantumThrowIfResNotOk(res, url);
     return res;
@@ -541,7 +388,6 @@ export const getQuantumQueryFn: <T>(options: {
       
       // Quantum analytics
       quantumPredictor.analyzeRequestPattern(url, 'GET', null, responseTime);
-      cacheIntelligence.recordCacheAccess(`GET:${url}`, true, JSON.stringify(data).length);
       
       return data;
     } catch (error) {
@@ -555,26 +401,8 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQuantumQueryFn({ on401: "throw" }),
-      refetchInterval: (query) => {
-        // Quantum-powered refetch strategy
-        const url = query.queryKey.join("/") as string;
-        const cacheStrategy = cacheIntelligence.getCacheStrategy(`GET:${url}`);
-        
-        if (cacheStrategy.priority === 'high') return 10000; // High priority: 10s
-        if (cacheStrategy.priority === 'medium') return 30000; // Medium: 30s
-        return false; // Low priority: no auto-refetch
-      },
-      refetchOnWindowFocus: (query) => {
-        const url = query.queryKey.join("/") as string;
-        const cacheStrategy = cacheIntelligence.getCacheStrategy(`GET:${url}`);
-        return cacheStrategy.priority === 'high';
-      },
-      staleTime: (query) => {
-        // Dynamic stale time based on quantum analysis
-        const url = query.queryKey.join("/") as string;
-        const cacheStrategy = cacheIntelligence.getCacheStrategy(`GET:${url}`);
-        return cacheStrategy.ttl || 300000; // Default 5 minutes
-      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
       retry: (failureCount, error) => {
         // Quantum retry logic
         const errorAnalysis = errorIntelligence.analyzeError('unknown', error);
@@ -602,7 +430,6 @@ export const queryClient = new QueryClient({
 console.log("🚀 QUANTUM API INTELLIGENCE HUB 2.0 - Initializing revolutionary systems...");
 console.log("🧠 Request Predictor: ACTIVE ✅");
 console.log("🛡️ Error Intelligence: ACTIVE ✅");
-console.log("🚀 Cache Optimization: ACTIVE ✅");
 console.log("🎯 Quantum Signature: QAPI-" + Math.random().toString(36).substr(2, 9).toUpperCase());
 console.log("🌟 Status: OPERATIONAL - MAXIMUM INTELLIGENCE");
 
@@ -610,14 +437,4 @@ console.log("🌟 Status: OPERATIONAL - MAXIMUM INTELLIGENCE");
 export const getQueryFn = getQuantumQueryFn;
 
 // Export quantum engines for advanced usage
-export { quantumPredictor, errorIntelligence, cacheIntelligence };
-import { QueryClient } from '@tanstack/react-query';
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+export { quantumPredictor, errorIntelligence };

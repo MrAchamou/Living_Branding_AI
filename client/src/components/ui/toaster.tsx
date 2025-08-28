@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/toast"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { nanoid } from "nanoid"
+import { cn } from "@/lib/utils"
 
 // ====================================================================
 // 🧠 QUANTUM TOASTER INTELLIGENCE 2.0 - REVOLUTIONARY AI COMPONENT
@@ -194,72 +195,6 @@ class AutonomousToasterIntelligence {
   }
 }
 
-// 🎨 Styles CSS Quantiques pour Toaster 2.0
-const quantumToasterStyles = `
-.quantum-toaster {
-  --quantum-glow: 0 0 20px rgba(59, 130, 246, 0.15);
-  --quantum-pulse: quantum-pulse 2s ease-in-out infinite;
-}
-
-.quantum-toaster-revolutionary {
-  background: linear-gradient(135deg, 
-    rgba(59, 130, 246, 0.05) 0%, 
-    rgba(147, 51, 234, 0.05) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  box-shadow: var(--quantum-glow);
-  backdrop-filter: blur(8px);
-}
-
-.quantum-toaster-autonomous {
-  background: linear-gradient(135deg, 
-    rgba(16, 185, 129, 0.05) 0%, 
-    rgba(59, 130, 246, 0.05) 100%);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
-  backdrop-filter: blur(12px);
-  animation: var(--quantum-pulse);
-}
-
-.quantum-toaster-adaptive {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.quantum-toaster-high-attention {
-  transform: scale(1.02);
-  z-index: 9999;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-.quantum-toaster-indicator {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 12px;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-@keyframes quantum-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .quantum-toaster-autonomous {
-    animation: none;
-  }
-}
-`;
-
-// Injection des styles dans le document
-if (typeof document !== 'undefined') {
-  const styleElement = document.createElement('style');
-  styleElement.textContent = quantumToasterStyles;
-  document.head.appendChild(styleElement);
-}
-
 // 🚀 Interface du Toaster révolutionnaire
 export interface QuantumToasterProps {
   intelligence?: "basic" | "adaptive" | "revolutionary" | "autonomous";
@@ -280,7 +215,7 @@ export function Toaster({
   intelligentStacking = true,
   contextualDuration = true
 }: QuantumToasterProps = {}) {
-  const { toasts, dismiss } = useToast();
+  const { toasts } = useToast();
   const [toasterIntelligence] = useState(() => 
     new AutonomousToasterIntelligence(`toaster-${nanoid(8)}`)
   );
@@ -336,18 +271,6 @@ export function Toaster({
     intelligence === "autonomous" && "quantum-toaster-autonomous"
   ].filter(Boolean).join(" ") : "";
 
-  // 📊 Affichage des métriques en mode développement
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && intelligence === "autonomous") {
-      const interval = setInterval(() => {
-        const metrics = toasterIntelligence.getIntelligenceMetrics();
-        console.log("🧠 QUANTUM TOASTER METRICS:", metrics);
-      }, 10000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [intelligence]);
-
   return (
     <ToastProvider>
       <div 
@@ -372,13 +295,7 @@ export function Toaster({
               onOpenChange={(open) => {
                 if (!open) {
                   handleToastInteraction(toast.id, 'dismissed');
-                  dismiss(toast.id);
-                } else {
-                  handleToastInteraction(toast.id, 'viewed');
                 }
-              }}
-              onSwipeEnd={() => {
-                handleToastInteraction(toast.id, 'swiped');
               }}
             >
               <div 
@@ -415,45 +332,7 @@ export function Toaster({
   )
 }
 
-// 🚀 Export avec backward compatibility
-export default Toaster;
-
 // 📊 Export des métriques pour le debugging
 export const getToasterMetrics = (intelligence: AutonomousToasterIntelligence) => {
   return intelligence.getIntelligenceMetrics();
 };
-"use client"
-
-import { useToast } from "@/hooks/use-toast"
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from "@/components/ui/toast"
-
-export function Toaster() {
-  const { toasts } = useToast()
-
-  return (
-    <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, ...props }) {
-        return (
-          <Toast key={id} {...props}>
-            <div className="grid gap-1">
-              {title && <ToastTitle>{title}</ToastTitle>}
-              {description && (
-                <ToastDescription>{description}</ToastDescription>
-              )}
-            </div>
-            {action}
-            <ToastClose />
-          </Toast>
-        )
-      })}
-      <ToastViewport />
-    </ToastProvider>
-  )
-}
