@@ -1,6 +1,4 @@
 
-#!/usr/bin/env node
-
 // 🚀 QUANTUM DEV STARTER - Démarreur de développement autonome
 import { execSync, spawn } from "child_process";
 import { existsSync } from "fs";
