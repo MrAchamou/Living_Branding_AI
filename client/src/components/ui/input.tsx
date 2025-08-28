@@ -1,8 +1,7 @@
-
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { useState, useEffect, useRef, useCallback } from "react"
-import { nanoid } from "nanoid"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { nanoid } from "nanoid";
 
 // ====================================================================
 // 🧠 QUANTUM INPUT INTELLIGENCE 2.0 - REVOLUTIONARY AI COMPONENT
@@ -28,7 +27,7 @@ class AutonomousInputIntelligence {
 
   private initializeInputIntelligence(): void {
     console.log(`🧠 INPUT INTELLIGENCE 2.0 - Initializing for ${this.inputId}...`);
-    
+
     // 📊 Analyse comportementale
     this.behaviorAnalyzer.set('typing_patterns', {
       typingSpeed: 0,
@@ -84,7 +83,7 @@ class AutonomousInputIntelligence {
 
   analyzeTypingPattern(value: string, timestamp: number): any {
     this.typingHistory.push(value);
-    
+
     // Garder seulement les 50 dernières entrées
     if (this.typingHistory.length > 50) {
       this.typingHistory.shift();
@@ -92,7 +91,7 @@ class AutonomousInputIntelligence {
 
     const typingSpeed = this.calculateTypingSpeed();
     const pattern = this.detectPattern(value);
-    
+
     return {
       typingSpeed,
       pattern,
@@ -104,10 +103,10 @@ class AutonomousInputIntelligence {
 
   private calculateTypingSpeed(): number {
     if (this.typingHistory.length < 2) return 0;
-    
+
     const recentEntries = this.typingHistory.slice(-10);
     const avgLength = recentEntries.reduce((sum, entry) => sum + entry.length, 0) / recentEntries.length;
-    
+
     return Math.round(avgLength * 60 / 1000); // WPM approximation
   }
 
@@ -124,30 +123,30 @@ class AutonomousInputIntelligence {
 
   private calculateConfidence(pattern: any): number {
     let confidence = 0.5;
-    
+
     if (pattern.isEmail) confidence += 0.3;
     if (pattern.isPhone) confidence += 0.25;
     if (pattern.isUrl) confidence += 0.2;
     if (pattern.isName) confidence += 0.15;
-    
+
     return Math.min(0.98, confidence);
   }
 
   private generateSuggestions(value: string, pattern: any): string[] {
     const suggestions = [];
-    
+
     if (pattern.isEmail && !value.includes('@')) {
       suggestions.push('@gmail.com', '@outlook.com', '@yahoo.com');
     }
-    
+
     if (pattern.isName && value.length > 3) {
       suggestions.push('Complete your full name');
     }
-    
+
     if (value.toLowerCase().includes('tech')) {
       suggestions.push('Technology', 'Technical', 'Innovation');
     }
-    
+
     return suggestions.slice(0, 3);
   }
 
@@ -317,7 +316,7 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
     autoComplete = true,
     ...props 
   }, ref) => {
-    
+
     // 🧠 État intelligent du composant
     const [inputIntelligence] = useState(() => new AutonomousInputIntelligence(nanoid()));
     const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -371,7 +370,7 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
       if (inputRef.current) {
         const currentValue = inputRef.current.value;
         let newValue = suggestion;
-        
+
         // Logique intelligente d'application des suggestions
         if (analysisResult?.pattern?.isEmail && suggestion.includes('@')) {
           const username = currentValue.split('@')[0];
@@ -379,7 +378,7 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
         } else if (currentValue.length > 0) {
           newValue = currentValue + ' ' + suggestion;
         }
-        
+
         inputRef.current.value = newValue;
         const event = new Event('input', { bubbles: true });
         inputRef.current.dispatchEvent(event);
@@ -390,7 +389,7 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
     // 🎨 Classes CSS dynamiques basées sur l'intelligence
     const getIntelligenceClasses = () => {
       const baseClasses = "quantum-input";
-      
+
       switch (intelligence) {
         case "adaptive":
           return `${baseClasses} adaptive`;
@@ -422,7 +421,7 @@ const QuantumInput = React.forwardRef<HTMLInputElement, QuantumInputProps>(
             onChange={handleChange}
             {...props}
           />
-          
+
           {/* 📊 Métriques d'intelligence */}
           {showMetrics && (
             <div className="quantum-metrics">

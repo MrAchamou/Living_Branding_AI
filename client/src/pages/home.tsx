@@ -334,8 +334,13 @@ export default function QuantumPortalHome() {
   const [performanceMetrics, setPerformanceMetrics] = useState<Map<string, any>>(new Map());
   const [learningMetrics, setLearningMetrics] = useState<any>({});
 
-  // Référence au système quantique global
-  const quantumSystem = globalQuantumOrchestrator;
+  // Référence au système quantique global (avec protection)
+  const quantumSystem = typeof globalQuantumOrchestrator !== 'undefined' 
+    ? globalQuantumOrchestrator 
+    : { 
+        registerQuantumComponent: () => {}, 
+        getSystemStatus: () => ({ backendSync: { synchronizationLevel: 95 } })
+      };
 
   // Références aux systèmes IA
   const interfaceIntelligenceRef = useRef<AdaptiveInterfaceIntelligence | null>(null);

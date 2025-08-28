@@ -1,4 +1,3 @@
-
 // ====================================================================
 // 🚀 QUANTUM FRONTEND CORE 2.0 - SYNCHRONISATION TOTALE BACKEND
 // ====================================================================
@@ -35,7 +34,7 @@ class QuantumBackendSynchronizer {
   private establishBackendConnection(): void {
     // Connexion quantique avec les moteurs backend
     this.pingBackendIntelligence();
-    
+
     // Synchronisation des signatures quantum
     setInterval(() => {
       if (this.realTimeSync) {
@@ -49,11 +48,11 @@ class QuantumBackendSynchronizer {
       const response = await fetch('/api/routes-quantum-status');
       if (response.ok) {
         const backendStatus = await response.json();
-        
+
         this.backendMetrics.set('routesEngine', backendStatus.routesEngine);
         this.backendMetrics.set('deliveryEngine', backendStatus.deliveryEngine);
         this.backendMetrics.set('systemHealth', backendStatus.systemHealth);
-        
+
         console.log("🔗 Backend quantum status synchronized");
         this.calculateSynchronizationLevel(backendStatus);
       }
@@ -66,7 +65,7 @@ class QuantumBackendSynchronizer {
   private calculateSynchronizationLevel(backendStatus: any): void {
     const backendAIEngines = backendStatus.systemHealth?.aiEngines || 0;
     const backendSignature = backendStatus.systemHealth?.quantumSignature;
-    
+
     if (backendAIEngines >= 12 && backendSignature) {
       this.synchronizationLevel = 100;
       console.log("🎯 PERFECT QUANTUM SYNCHRONIZATION ACHIEVED - 100%");
@@ -91,7 +90,7 @@ class QuantumBackendSynchronizer {
 
     const totalRequests = routeMetrics.globalMetrics?.totalRequests || 0;
     const avgResponseTime = routeMetrics.globalMetrics?.averageResponseTime || 100;
-    
+
     // Calcul de fréquence basé sur l'activité backend
     return Math.max(30, Math.min(120, 60 + (totalRequests / 10) - (avgResponseTime / 50)));
   }
@@ -100,16 +99,16 @@ class QuantumBackendSynchronizer {
     // Fréquence basée sur l'activité frontend
     const performanceEntries = performance.getEntriesByType('navigation');
     const userInteractions = this.syncHistory.length;
-    
+
     return Math.max(30, Math.min(120, 60 + (userInteractions / 5)));
   }
 
   private harmonizeFrequencies(): void {
     const targetFrequency = (this.backendFrequency + this.frontendFrequency) / 2;
-    
+
     if (Math.abs(this.backendFrequency - this.frontendFrequency) > 10) {
       console.log(`🎵 Harmonizing frequencies: Backend ${this.backendFrequency}Hz → Frontend ${this.frontendFrequency}Hz → Target ${targetFrequency}Hz`);
-      
+
       // Ajustement automatique de la fréquence frontend
       this.adjustFrontendFrequency(targetFrequency);
     }
@@ -118,7 +117,7 @@ class QuantumBackendSynchronizer {
   private adjustFrontendFrequency(targetFreq: number): void {
     // Ajustement des timers et animations pour synchroniser
     document.documentElement.style.setProperty('--quantum-frequency', `${targetFreq}ms`);
-    
+
     // Notification aux composants pour ajustement
     window.dispatchEvent(new CustomEvent('quantum-frequency-sync', {
       detail: { frequency: targetFreq, synchronizationLevel: this.synchronizationLevel }
@@ -144,7 +143,7 @@ class QuantumBackendSynchronizer {
     };
 
     this.syncHistory.push(metrics);
-    
+
     // Garder seulement les 20 dernières métriques
     if (this.syncHistory.length > 20) {
       this.syncHistory.shift();
@@ -157,7 +156,7 @@ class QuantumBackendSynchronizer {
 
     const loadTime = navigation.loadEventEnd - navigation.navigationStart;
     const score = Math.max(0, Math.min(100, 100 - (loadTime / 50)));
-    
+
     return Math.round(score);
   }
 
@@ -166,7 +165,7 @@ class QuantumBackendSynchronizer {
     try {
       if (this.syncHistory.length > 0) {
         const latestMetrics = this.syncHistory[this.syncHistory.length - 1];
-        
+
         await fetch('/api/frontend-metrics-sync', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -213,8 +212,8 @@ class QuantumBackendSynchronizer {
       frontendFrequency: this.frontendFrequency,
       realTimeSync: this.realTimeSync,
       backendConnected: this.backendMetrics.size > 0,
-      lastSync: this.syncHistory.length > 0 ? 
-        this.syncHistory[this.syncHistory.length - 1].timestamp : 
+      lastSync: this.syncHistory.length > 0 ?
+        this.syncHistory[this.syncHistory.length - 1].timestamp :
         Date.now()
     };
   }
@@ -259,18 +258,18 @@ class QuantumUIOrchestrator {
         --quantum-secondary: #EC4899;
         --quantum-accent: #06B6D4;
         --quantum-neural: #10B981;
-        
+
         /* Gradients révolutionnaires synchronisés */
-        --quantum-gradient-primary: linear-gradient(135deg, 
-          var(--quantum-primary), 
-          var(--quantum-secondary), 
+        --quantum-gradient-primary: linear-gradient(135deg,
+          var(--quantum-primary),
+          var(--quantum-secondary),
           var(--quantum-accent));
-        
+
         --quantum-gradient-neural: linear-gradient(45deg,
           var(--quantum-neural),
           var(--quantum-primary),
           var(--quantum-secondary));
-          
+
         /* Animations quantiques */
         --quantum-animation-speed: calc(var(--quantum-frequency) * 1.5);
         --quantum-pulse-speed: calc(var(--quantum-frequency) * 2);
@@ -294,13 +293,13 @@ class QuantumUIOrchestrator {
       }
 
       @keyframes quantum-sync-pulse {
-        0%, 100% { 
-          transform: scale(1); 
-          box-shadow: 0 0 0 rgba(139, 92, 246, 0.3); 
+        0%, 100% {
+          transform: scale(1);
+          box-shadow: 0 0 0 rgba(139, 92, 246, 0.3);
         }
-        50% { 
-          transform: scale(1.02); 
-          box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); 
+        50% {
+          transform: scale(1.02);
+          box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
         }
       }
 
@@ -335,14 +334,14 @@ class QuantumUIOrchestrator {
 
   private updateAdaptiveStyles(syncStatus: any): void {
     const root = document.documentElement;
-    
+
     // Ajustement des couleurs selon le niveau de sync
     const syncLevel = syncStatus.synchronizationLevel;
     const intensity = syncLevel / 100;
-    
+
     root.style.setProperty('--quantum-sync-intensity', intensity.toString());
     root.style.setProperty('--quantum-sync-level', `${syncLevel}%`);
-    
+
     // Adaptation de la fréquence visuelle
     if (syncStatus.backendFrequency !== this.visualFrequency) {
       this.visualFrequency = syncStatus.backendFrequency;
@@ -355,7 +354,7 @@ class QuantumUIOrchestrator {
     // Écoute des changements de fréquence backend
     window.addEventListener('quantum-frequency-sync', (event: any) => {
       const { frequency, synchronizationLevel } = event.detail;
-      
+
       this.visualFrequency = frequency;
       this.updateQuantumComponents(frequency, synchronizationLevel);
     });
@@ -364,11 +363,11 @@ class QuantumUIOrchestrator {
   private updateQuantumComponents(frequency: number, syncLevel: number): void {
     // Mise à jour de tous les composants quantiques
     const quantumComponents = document.querySelectorAll('.quantum-component');
-    
+
     quantumComponents.forEach((component: Element) => {
       const htmlElement = component as HTMLElement;
       htmlElement.style.setProperty('--local-quantum-frequency', `${frequency}ms`);
-      
+
       // Ajout de classes selon le niveau de sync
       if (syncLevel >= 95) {
         htmlElement.classList.add('quantum-synchronized', 'quantum-neural-active');
@@ -419,13 +418,13 @@ class QuantumFrontendOrchestrator {
     this.orchestratorSignature = `QFO-${Date.now().toString(16).toUpperCase()}-${nanoid(8).toUpperCase()}`;
     this.backendSynchronizer = new QuantumBackendSynchronizer();
     this.uiOrchestrator = new QuantumUIOrchestrator(this.backendSynchronizer);
-    
+
     this.initializeQuantumFrontend();
   }
 
   private initializeQuantumFrontend(): void {
     console.log("🚀 QUANTUM FRONTEND ORCHESTRATOR 2.0 - Full system initialization...");
-    
+
     this.startQuantumMonitoring();
     this.initialized = true;
 
@@ -454,7 +453,7 @@ class QuantumFrontendOrchestrator {
   private logQuantumStatus(): void {
     const backendStatus = this.backendSynchronizer.getSyncStatus();
     const uiStatus = this.uiOrchestrator.getUIStatus();
-    
+
     console.log(`🎯 Quantum Sync: ${backendStatus.synchronizationLevel}% | UI Freq: ${uiStatus.visualFrequency}Hz | Components: ${uiStatus.componentsRegistered}`);
   }
 

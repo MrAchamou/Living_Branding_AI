@@ -1,3 +1,41 @@
+
+import { globalAIErrorEngine } from './ai-error-correction';
+
+// Route pour capturer les erreurs frontend
+quantumRouter.post('/api/frontend-error-capture', async (req, res) => {
+  try {
+    const { error, context, component } = req.body;
+    
+    console.log('🚨 Frontend error captured:', error?.message || 'Unknown error');
+    
+    // Traitement par l'IA de détection d'erreurs
+    const aiResult = await globalAIErrorEngine.handleError(error, {
+      type: 'frontend_error',
+      component,
+      context,
+      userAgent: req.get('User-Agent'),
+      path: req.path
+    });
+    
+    res.json({
+      success: true,
+      errorProcessed: true,
+      aiResult,
+      correctionAttempted: aiResult.corrected,
+      message: 'Error captured and processed by AI system'
+    });
+    
+  } catch (processingError) {
+    console.error('❌ Error processing frontend error:', processingError);
+    res.status(500).json({
+      success: false,
+      error: 'Error processing failed',
+      fallback: true
+    });
+  }
+});
+
+
 import express from "express";
 import type { Request, Response } from "express";
 import { storage } from "./storage";

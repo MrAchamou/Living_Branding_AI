@@ -9,6 +9,7 @@ import Home from "@/pages/home";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { globalQuantumOrchestrator } from "@/lib/quantum-frontend-core";
+import { frontendErrorHandler } from "@/lib/frontend-error-handler";
 
 // ====================================================================
 // QUANTUM APP INTELLIGENCE 2.0 - AI FRONTEND ORCHESTRATOR
@@ -163,6 +164,9 @@ export default function App() {
 
       // Enregistrement de l'intelligence app
       globalQuantumOrchestrator.registerQuantumComponent('app-intelligence', appIntelligence);
+      
+      // Activation du gestionnaire d'erreurs frontend
+      frontendErrorHandler.setupGlobalHandlers();
       
       setAppReady(true);
       
