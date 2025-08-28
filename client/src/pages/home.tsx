@@ -4,6 +4,7 @@ import ParticleBackground from "@/components/particle-background";
 import CreationPanel from "@/components/creation-panel";
 import VisualizationPanel from "@/components/visualization-panel";
 import ResultsSection from "@/components/results-section";
+import { globalQuantumOrchestrator } from "@/lib/quantum-frontend-core";
 
 // ====================================================================
 // 🧠 QUANTUM PORTAL HOME 2.0 - REVOLUTIONARY INTERFACE INTELLIGENCE
