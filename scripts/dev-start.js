@@ -77,8 +77,8 @@ class QuantumDevStarter {
     
     try {
       // Commandes séparées et correctement formatées
-      const backendCmd = 'npx tsx server/index.ts';
-      const frontendCmd = 'cd client && npm run dev -- --host 0.0.0.0 --port 5173';
+      const backendCmd = 'NODE_ENV=development npx tsx server/index.ts';
+      const frontendCmd = 'cd client && npm run dev -- --host 0.0.0.0 --port 5173 --cors';
       
       // Utilisation directe de npx concurrently
       const concurrentlyCmd = `npx concurrently --kill-others --prefix-colors "cyan.bold,magenta.bold" --names "BACKEND,FRONTEND" "${backendCmd}" "${frontendCmd}"`;

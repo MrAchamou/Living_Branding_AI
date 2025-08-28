@@ -85,3 +85,42 @@ export default function NotFound() {
     </div>
   );
 }
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Home, Sparkles } from "lucide-react";
+
+export default function NotFound() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+      <div className="text-center px-4">
+        <div className="mb-8">
+          <h1 className="text-9xl font-bold text-white/20 mb-4">404</h1>
+          <h2 className="text-4xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            Page Introuvable
+          </h2>
+          <p className="text-xl text-gray-300 max-w-md mx-auto mb-8">
+            Cette page n'existe pas dans notre dimension quantique
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <Button
+            asChild
+            className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold"
+          >
+            <Link to="/">
+              <Home className="w-4 h-4 mr-2" />
+              Retour à l'Accueil
+            </Link>
+          </Button>
+          
+          <div className="flex items-center justify-center space-x-2 text-gray-400">
+            <Sparkles className="w-4 h-4" />
+            <span>Quantum Brand Creator 2.0</span>
+            <Sparkles className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

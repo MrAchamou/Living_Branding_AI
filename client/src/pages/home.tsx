@@ -550,3 +550,143 @@ export default function QuantumPortalHome() {
     </div>
   );
 }
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Zap, Brain, Target } from "lucide-react";
+
+export default function Home() {
+  const [companyName, setCompanyName] = useState("");
+  const [sector, setSector] = useState("");
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleAnalyze = async () => {
+    if (!companyName.trim()) return;
+    
+    setLoading(true);
+    try {
+      const response = await fetch('/api/analyze-potential', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          companyName: companyName.trim(),
+          sector: sector.trim() || "Intelligence Artificielle"
+        })
+      });
+      
+      const data = await response.json();
+      setAnalysis(data);
+    } catch (error) {
+      console.error('Erreur d\'analyse:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-4 bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+            Quantum Brand Creator 2.0
+          </h1>
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            Créez des marques révolutionnaires avec l'intelligence artificielle quantique
+          </p>
+        </div>
+
+        <Card className="max-w-2xl mx-auto bg-white/10 backdrop-blur-md border-purple-500/30">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center gap-2">
+              <Brain className="w-6 h-6 text-purple-400" />
+              Analyse Quantique de Potentiel
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <Input
+                placeholder="Nom de votre entreprise"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="bg-white/20 border-purple-400/50 text-white placeholder-gray-300"
+              />
+            </div>
+            <div>
+              <Input
+                placeholder="Secteur d'activité (optionnel)"
+                value={sector}
+                onChange={(e) => setSector(e.target.value)}
+                className="bg-white/20 border-purple-400/50 text-white placeholder-gray-300"
+              />
+            </div>
+            <Button 
+              onClick={handleAnalyze} 
+              disabled={loading || !companyName.trim()}
+              className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white font-semibold py-3"
+            >
+              {loading ? (
+                <>
+                  <Zap className="w-4 h-4 mr-2 animate-spin" />
+                  Analyse en cours...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Analyser le Potentiel Quantique
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {analysis && (
+          <Card className="max-w-4xl mx-auto mt-8 bg-white/10 backdrop-blur-md border-green-500/30">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-2">
+                <Target className="w-6 h-6 text-green-400" />
+                Résultats de l'Analyse Quantique
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-lg p-4">
+                    <h3 className="text-white font-semibold mb-2">Potentiel Révolutionnaire</h3>
+                    <Badge className="bg-gradient-to-r from-purple-600 to-cyan-600 text-white">
+                      {analysis.potential?.revolutionaryFactor || 'N/A'}
+                    </Badge>
+                  </div>
+                  <div className="bg-gradient-to-r from-green-500/20 to-blue-500/20 rounded-lg p-4">
+                    <h3 className="text-white font-semibold mb-2">Impact CEO</h3>
+                    <Badge className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
+                      {analysis.potential?.ceoImpact || 'N/A'}%
+                    </Badge>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-4">
+                    <h3 className="text-white font-semibold mb-2">Pouvoir Hypnotique</h3>
+                    <Badge className="bg-gradient-to-r from-yellow-600 to-orange-600 text-white">
+                      {analysis.potential?.hypnoticPower || 'N/A'}
+                    </Badge>
+                  </div>
+                  <div className="bg-gradient-to-r from-pink-500/20 to-red-500/20 rounded-lg p-4">
+                    <h3 className="text-white font-semibold mb-2">Prédiction</h3>
+                    <p className="text-white text-sm">
+                      {analysis.prediction || 'Analyse en cours...'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}

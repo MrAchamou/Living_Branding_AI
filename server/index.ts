@@ -61,6 +61,33 @@ passport.deserializeUser((id: number, done) => {
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+// 🔐 Configuration CORS
+app.use((req, res, next) => {
+  const origin = req.get('Origin');
+  
+  // Autoriser tous les domaines Replit
+  if (origin && (
+    origin.includes('replit.dev') || 
+    origin.includes('replit.co') || 
+    origin.includes('localhost') ||
+    origin.includes('127.0.0.1') ||
+    origin.includes('0.0.0.0')
+  )) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+    return;
+  }
+  
+  next();
+});
+
 // 🚀 Configuration WebSocket
 const wss = new WebSocketServer({ server });
 
