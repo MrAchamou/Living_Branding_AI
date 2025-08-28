@@ -1,7 +1,82 @@
 
 import { useCallback, useRef, useState, useEffect } from "react";
-import { toast } from "@/components/ui/toast";
 import { nanoid } from "nanoid";
+
+// Types pour le système de toast
+type ToastType = "default" | "destructive";
+
+interface ToastItem {
+  id: string;
+  title?: string;
+  description?: string;
+  variant?: ToastType;
+  duration?: number;
+  action?: React.ReactElement;
+  onDismiss?: () => void;
+  className?: string;
+}
+
+// Gestionnaire global des toasts
+class ToastManager {
+  private static instance: ToastManager;
+  private listeners: Set<(toasts: ToastItem[]) => void> = new Set();
+  private toasts: ToastItem[] = [];
+
+  static getInstance(): ToastManager {
+    if (!ToastManager.instance) {
+      ToastManager.instance = new ToastManager();
+    }
+    return ToastManager.instance;
+  }
+
+  addToast(toast: Omit<ToastItem, 'id'>): string {
+    const id = nanoid();
+    const newToast: ToastItem = {
+      ...toast,
+      id,
+    };
+
+    this.toasts.push(newToast);
+    this.notifyListeners();
+
+    // Auto-dismiss après la durée spécifiée
+    if (toast.duration !== Infinity) {
+      setTimeout(() => {
+        this.removeToast(id);
+      }, toast.duration || 4000);
+    }
+
+    return id;
+  }
+
+  removeToast(id: string): void {
+    const index = this.toasts.findIndex(toast => toast.id === id);
+    if (index > -1) {
+      const toast = this.toasts[index];
+      toast.onDismiss?.();
+      this.toasts.splice(index, 1);
+      this.notifyListeners();
+    }
+  }
+
+  subscribe(listener: (toasts: ToastItem[]) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners(): void {
+    this.listeners.forEach(listener => listener([...this.toasts]));
+  }
+
+  getToasts(): ToastItem[] {
+    return [...this.toasts];
+  }
+}
+
+// Fonction toast globale
+export const toast = (options: Omit<ToastItem, 'id'>) => {
+  return ToastManager.getInstance().addToast(options);
+};
 
 // ====================================================================
 // 🧠 QUANTUM TOAST INTELLIGENCE 2.0 - REVOLUTIONARY NOTIFICATION AI
@@ -265,15 +340,18 @@ interface QuantumToastStatus {
 export function useQuantumToast() {
   const [toastStatus, setToastStatus] = useState<QuantumToastStatus | null>(null);
   const [activeToasts, setActiveToasts] = useState<Map<string, any>>(new Map());
+  const [toasts, setToasts] = useState<ToastItem[]>([]);
   
   // Référence du moteur d'intelligence
   const toastEngineRef = useRef<ToastIntelligenceEngine | null>(null);
+  const toastManagerRef = useRef<ToastManager | null>(null);
 
   // Initialisation de l'intelligence toast
   useEffect(() => {
     console.log("🚀 QUANTUM TOAST HOOK 2.0 - Initializing intelligent notifications...");
     
     toastEngineRef.current = new ToastIntelligenceEngine();
+    toastManagerRef.current = ToastManager.getInstance();
     
     const signature = `QTH-${Date.now().toString(16).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
     
@@ -285,11 +363,16 @@ export function useQuantumToast() {
       adaptiveMode: true
     });
 
+    // Subscribe to toast changes
+    const unsubscribe = toastManagerRef.current.subscribe(setToasts);
+
     console.log("🚀 QUANTUM TOAST HOOK 2.0 DEPLOYED SUCCESSFULLY!");
     console.log("🧠 Toast Intelligence: ACTIVE ✅");
     console.log("🎯 Adaptive Notifications: ACTIVE ✅");
     console.log("⚡ Contextual Optimization: ACTIVE ✅");
     console.log(`🌟 Toast Signature: ${signature}`);
+
+    return unsubscribe;
   }, []);
 
   // Toast intelligent avec analyse contextuelle
@@ -409,6 +492,10 @@ export function useQuantumToast() {
     return Array.from(activeToasts.values());
   }, [activeToasts]);
 
+  const dismiss = useCallback((toastId: string) => {
+    toastManagerRef.current?.removeToast(toastId);
+  }, []);
+
   return {
     // Toasts intelligents
     toast: showIntelligentToast,
@@ -422,6 +509,8 @@ export function useQuantumToast() {
     toastStatus,
     activeToasts: getActiveToasts(),
     toastIntelligence: getToastIntelligence(),
+    toasts, // Pour le composant Toaster
+    dismiss, // Pour fermer les toasts
     
     // Compteurs
     totalToasts: toastStatus?.totalToasts || 0,
