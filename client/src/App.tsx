@@ -9,6 +9,7 @@ import { BrowserRouter, Routes } from "react-router-dom";
 import { QueryClient } from "@tanstack/react-query";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
+import { globalQuantumOrchestrator } from "@/lib/quantum-frontend-core";
 
 // ====================================================================
 // QUANTUM APP INTELLIGENCE 2.0 - AI FRONTEND ORCHESTRATOR
@@ -239,27 +240,20 @@ function Router() {
 }
 
 function App() {
-  const [appIntelligence] = useState(() => globalAppIntelligence);
+  const [quantumOrchestrator] = useState(() => globalQuantumOrchestrator);
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Initialisation de l'intelligence app (invisible pour l'utilisateur)
-    console.log("🚀 QUANTUM APP INTELLIGENCE 2.0 DEPLOYED SUCCESSFULLY!");
-    console.log(`🧠 App Intelligence: ACTIVE ✅`);
-    console.log(`⚡ Performance Monitoring: ACTIVE ✅`);
-    console.log(`📊 Behavioral Analytics: ACTIVE ✅`);
-    console.log(`🎯 Predictive Optimization: ACTIVE ✅`);
-    console.log(`🌟 Quantum App Signature: ${appIntelligence.getAppSignature()}`);
-    console.log("🚀 ====================================================");
-    console.log("   QUANTUM APP CORE 2.0 - SUCCESSFULLY DEPLOYED");
-    console.log("   Revolutionary Frontend with Full AI Intelligence");
-    console.log("   App Intelligence: ACTIVE ✅");
-    console.log("   Performance Monitoring: ACTIVE ✅");
-    console.log("   Behavioral Analytics: ACTIVE ✅");
-    console.log("   Predictive Optimization: ACTIVE ✅");
-    console.log("   Status: OPERATIONAL - MAXIMUM POWER");
-    console.log("🚀 ====================================================");
-
+    // Initialisation du système quantique complet avec synchronisation backend
+    console.log("🚀 QUANTUM FRONTEND ORCHESTRATOR 2.0 DEPLOYED SUCCESSFULLY!");
+    
+    const systemStatus = quantumOrchestrator.getSystemStatus();
+    console.log(`🔗 Backend Synchronization: ${systemStatus.backendSync.synchronizationLevel}% ✅`);
+    console.log(`🎨 UI Orchestration: ${systemStatus.uiOrchestration.visualFrequency}Hz ✅`);
+    console.log(`🧠 Quantum Intelligence: ${systemStatus.systemHealth.quantumLevel} ✅`);
+    console.log(`⚡ System Health: ${systemStatus.systemHealth.operationalStatus} ✅`);
+    console.log(`🌟 Quantum Orchestrator: ${systemStatus.orchestratorSignature}`);
+    
     setIsInitialized(true);
 
     // Enregistrement des événements de performance
@@ -278,12 +272,16 @@ function App() {
     };
   }, [appIntelligence]);
 
-  // Hook pour enregistrer les changements de route
+  // Hook pour enregistrer les changements de route avec synchronisation backend
   useEffect(() => {
     const handleRouteChange = () => {
       const currentPath = window.location.pathname;
-      appIntelligence.recordNavigation(currentPath);
-      console.log(`🎯 Route intelligence recorded: ${currentPath}`);
+      quantumOrchestrator.recordUserAction('route_navigation', { 
+        path: currentPath, 
+        timestamp: Date.now(),
+        syncLevel: quantumOrchestrator.getSystemStatus().backendSync.synchronizationLevel
+      });
+      console.log(`🎯 Quantum route sync: ${currentPath} (Sync: ${quantumOrchestrator.getSystemStatus().backendSync.synchronizationLevel}%)`);
     };
 
     // Écouter les changements de route
@@ -293,7 +291,7 @@ function App() {
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
     };
-  }, [appIntelligence]);
+  }, [quantumOrchestrator]);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -782,7 +782,7 @@ class BrandGuidelinesGenerator {
     };
   }
 
-  private async generateMainGuide(brandCreation: any, analysis: DeliveryAnalysis, language: string, culturalConfig: any): Promise<DocumentFile> {
+  private async generateMainGuide(brandCreation: any, deliveryAnalysis: DeliveryAnalysis, language: string, culturalConfig: any): Promise<DocumentFile> {
     console.log(`📖 Generating main brand guide in ${language}...`);
 
     const content = await this.generateMainGuideContent(brandCreation, language, culturalConfig);
@@ -841,17 +841,17 @@ Cette identité animée a été conçue pour transcender les standards tradition
 Chaque animation, chaque transition a été pensée pour maximiser l'impact émotionnel et
 l'engagement de votre audience francophone et globale.
 
-## Philosophie d'Animation
-L'animation de votre logo suit une approche quantique révolutionnaire : elle s'adapte au contexte culturel,
-réagit à l'interaction utilisateur, et crée une expérience mémorable à chaque apparition.
+## Philosophie d\'Animation
+L\'animation de votre logo suit une approche quantique révolutionnaire : elle s\'adapte au contexte culturel,
+réagit à l\'interaction utilisateur, et crée une expérience mémorable à chaque apparition.
 
 ## Excellence et Savoir-Faire
 Cette documentation garantit une utilisation optimale de votre identité animée
 selon les plus hauts standards professionnels français et internationaux.
 
 ## Positionnement Premium
-Votre marque bénéficie d'un positionnement premium adapté au marché francophone,
-avec une sophistication qui reflète l'excellence française dans le design et l'innovation.
+Votre marque bénéficie d\'un positionnement premium adapté au marché francophone,
+avec une sophistication qui reflète l\'excellence française dans le design et l\'innovation.
     `.trim();
   }
 
