@@ -10,6 +10,7 @@ import { nanoid } from "nanoid";
 import { z } from "zod";
 import { setupRoutes } from "./routes.js";
 import { setupVite } from "./vite.js";
+import { globalAIErrorEngine } from "./ai-error-correction.js";
 
 const app = express();
 const server = createServer(app);
@@ -145,6 +146,18 @@ wss.on("connection", (ws: WebSocket) => {
 
 // 📦 Configuration des routes
 setupRoutes(app);
+
+// 🧠 Middleware d'erreur IA local
+app.use(globalAIErrorEngine.createErrorMiddleware());
+
+// 🧠 Route de status IA
+app.get("/api/ai-error-engine/status", (req, res) => {
+  res.json(globalAIErrorEngine.getEngineStatus());
+});
+
+app.get("/api/ai-error-engine/analytics", (req, res) => {
+  res.json(globalAIErrorEngine.getErrorAnalytics());
+});
 
 // ⚡ Configuration Vite (développement)
 if (process.env.NODE_ENV !== "production") {
