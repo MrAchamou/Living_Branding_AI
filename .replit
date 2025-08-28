@@ -24,7 +24,7 @@ localPort = 24678
 externalPort = 3000
 
 [workflows]
-runButton = "Development Server"
+runButton = "Quantum Full Stack"
 
 [[workflows.workflow]]
 name = "Development Server"
@@ -34,3 +34,12 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Quantum Full Stack"
+author = 47005591
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node scripts/dev-start.js"
