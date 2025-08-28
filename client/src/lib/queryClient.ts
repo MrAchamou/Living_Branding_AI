@@ -611,3 +611,13 @@ export const getQueryFn = getQuantumQueryFn;
 
 // Export quantum engines for advanced usage
 export { quantumPredictor, errorIntelligence, cacheIntelligence };
+import { QueryClient } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});

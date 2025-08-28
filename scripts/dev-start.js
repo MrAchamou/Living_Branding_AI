@@ -1,4 +1,3 @@
-
 // 🚀 QUANTUM DEV STARTER - Démarreur de développement autonome
 import { execSync, spawn } from "child_process";
 import { existsSync } from "fs";
@@ -19,7 +18,7 @@ class QuantumDevStarter {
 
   validateEnvironment() {
     console.log("🔍 Validating development environment...");
-    
+
     for (const dep of this.criticalDeps) {
       if (!this.checkDep(dep)) {
         console.log(`⚡ Auto-fixing missing dependency: ${dep}`);
@@ -31,12 +30,35 @@ class QuantumDevStarter {
   checkClientDependencies() {
     const clientPath = path.join(process.cwd(), 'client');
     const clientPackageJson = path.join(clientPath, 'package.json');
-    
+
     if (!existsSync(clientPackageJson)) {
       console.log("⚡ Initializing client dependencies...");
       this.initializeClient();
     } else {
-      console.log("✅ Client dependencies validated");
+      // ⚡ VÉRIFICATION ET INSTALLATION AUTOMATIQUE DES DÉPENDANCES CRITIQUES
+      const criticalDependencies = ['concurrently', 'tsx'];
+      const criticalClientDeps = ['@tanstack/react-query', 'wouter', 'nanoid', 'three', '@types/three'];
+
+      console.log('🔍 Validating development environment...');
+
+      try {
+        // Vérification client
+        execSync('cd client && npm list', { stdio: 'pipe' });
+        console.log('✅ Client dependencies validated');
+      } catch {
+        console.log('⚡ Installing client dependencies...');
+        execSync('cd client && npm install', { stdio: 'inherit' });
+      }
+
+      // Vérification des dépendances client critiques
+      for (const dep of criticalClientDeps) {
+        try {
+          execSync(`cd client && npm list ${dep}`, { stdio: 'pipe' });
+        } catch {
+          console.log(`⚡ Installing critical client dependency: ${dep}`);
+          execSync(`cd client && npm install ${dep}`, { stdio: 'inherit' });
+        }
+      }
     }
   }
 
@@ -74,15 +96,15 @@ class QuantumDevStarter {
 
   startDevelopment() {
     console.log("🚀 Starting Quantum Development Environment...");
-    
+
     try {
       // Commandes séparées et correctement formatées
       const backendCmd = 'NODE_ENV=development npx tsx server/index.ts';
       const frontendCmd = 'cd client && npm run dev -- --host 0.0.0.0 --port 5173 --cors';
-      
+
       // Utilisation directe de npx concurrently
       const concurrentlyCmd = `npx concurrently --kill-others --prefix-colors "cyan.bold,magenta.bold" --names "BACKEND,FRONTEND" "${backendCmd}" "${frontendCmd}"`;
-      
+
       const child = spawn('sh', ['-c', concurrentlyCmd], {
         stdio: 'inherit',
         env: { ...process.env, NODE_ENV: 'development' }
@@ -108,7 +130,7 @@ class QuantumDevStarter {
 
   fallbackStart() {
     console.log("🔄 Starting fallback mode...");
-    
+
     // Démarrage séquentiel en fallback
     console.log("🚀 Starting backend...");
     const backend = spawn('npx', ['tsx', 'server/index.ts'], {
