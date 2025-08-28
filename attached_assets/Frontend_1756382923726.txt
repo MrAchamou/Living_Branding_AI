@@ -1,0 +1,593 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const UltimateLivingBrandingFrontend = () => {
+  // États principaux
+  const [companyName, setCompanyName] = useState('');
+  const [sector, setSector] = useState('');
+  const [styleMode, setStyleMode] = useState('INTEMPOREL');
+  const [watermark, setWatermark] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [creationResult, setCreationResult] = useState(null);
+  const [currentPreview, setCurrentPreview] = useState('Static_Hero');
+  const [progress, setProgress] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState('');
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  
+  // Références Three.js
+  const canvasRef = useRef(null);
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
+  const rendererRef = useRef(null);
+  const controlsRef = useRef(null);
+  const modelRef = useRef(null);
+  
+  // Secteurs disponibles
+  const sectors = [
+    "Intelligence Artificielle", "Biotechnologie", "Fintech", "Blockchain & Crypto",
+    "Quantum Computing", "Neurotechnologie", "Robotique Avancée", "Réalité Virtuelle/Augmentée",
+    "Spatial & Aérospatial", "Énergie Renouvelable", "Nanotechnologie", "Cybersécurité",
+    "IoT & Smart Cities", "Génétique & CRISPR", "Mobilité Autonome", "Intelligence Quantique",
+    "Bioinformatique", "Clean Tech", "EdTech Révolutionnaire", "HealthTech"
+  ];
+  
+  // Modes de style
+  const styleModes = [
+    { value: "INTEMPOREL", label: "Intemporel - Beauté Éternelle", description: "Design révolutionnaire mais intemporel" },
+    { value: "AVANT_GARDE_10_ANS", label: "Avant-garde 10+ ans", description: "Vision du futur, anticipe les tendances" }
+  ];
+  
+  // Initialisation Three.js
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    
+    // Initialiser la scène
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0a12);
+    sceneRef.current = scene;
+    
+    // Initialiser la caméra
+    const camera = new THREE.PerspectiveCamera(75, canvasRef.current.clientWidth / canvasRef.current.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+    cameraRef.current = camera;
+    
+    // Initialiser le renderer
+    const renderer = new THREE.WebGLRenderer({ 
+      canvas: canvasRef.current, 
+      antialias: true,
+      alpha: true 
+    });
+    renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    rendererRef.current = renderer;
+    
+    // Ajouter les contrôles
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controlsRef.current = controls;
+    
+    // Ajouter des lumières
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+    
+    const pointLight = new THREE.PointLight(0x4f46e5, 2, 100);
+    pointLight.position.set(-5, -5, -5);
+    scene.add(pointLight);
+    
+    // Animation loop
+    const animate = () => {
+      requestAnimationFrame(animate);
+      
+      if (modelRef.current) {
+        modelRef.current.rotation.x += 0.005;
+        modelRef.current.rotation.y += 0.007;
+      }
+      
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    
+    animate();
+    
+    // Nettoyage
+    return () => {
+      if (renderer) renderer.dispose();
+    };
+  }, []);
+  
+  // Charger le modèle 3D quand les résultats sont prêts
+  useEffect(() => {
+    if (!creationResult || !sceneRef.current) return;
+    
+    // Supprimer l'ancien modèle
+    if (modelRef.current) {
+      sceneRef.current.remove(modelRef.current);
+    }
+    
+    // Créer un géométrie temporaire (dans une vraie app, vous chargeriez le modèle réel)
+    const geometry = new THREE.IcosahedronGeometry(2, 1);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x4f46e5,
+      emissive: 0x2e2a8a,
+      shininess: 100,
+      wireframe: false
+    });
+    
+    const model = new THREE.Mesh(geometry, material);
+    sceneRef.current.add(model);
+    modelRef.current = model;
+    
+    // Ajuster la caméra
+    if (cameraRef.current) {
+      cameraRef.current.position.z = 5;
+    }
+  }, [creationResult]);
+  
+  // Gérer le redimensionnement
+  useEffect(() => {
+    const handleResize = () => {
+      if (cameraRef.current && rendererRef.current && canvasRef.current) {
+        cameraRef.current.aspect = canvasRef.current.clientWidth / canvasRef.current.clientHeight;
+        cameraRef.current.updateProjectionMatrix();
+        rendererRef.current.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  // Simuler la création de marque
+  const createRevolutionaryBrand = async () => {
+    if (!companyName || !sector) return;
+    
+    setIsLoading(true);
+    setProgress(0);
+    setCreationResult(null);
+    
+    // Simuler les phases de création
+    const phases = [
+      { name: "GENESIS FROM NOTHING", duration: 60 },
+      { name: "FORGING IMPOSSIBLE VISUALS", duration: 120 },
+      { name: "DIVINE VALIDATIONS", duration: 60 },
+      { name: "AUTONOMOUS PERFECTION", duration: 60 },
+      { name: "INTELLIGENT WATERMARK & PREVIEW", duration: 30 },
+      { name: "LEARNING UPDATE", duration: 10 }
+    ];
+    
+    let totalProgress = 0;
+    
+    for (const phase of phases) {
+      setCurrentPhase(phase.name);
+      const phaseProgress = phase.duration / 340; // 340 = durée totale
+      
+      for (let i = 0; i < 100; i++) {
+        await new Promise(resolve => setTimeout(resolve, phase.duration));
+        totalProgress += phaseProgress / 100;
+        setProgress(Math.min(99, Math.round(totalProgress * 100)));
+      }
+    }
+    
+    // Simuler le résultat
+    setTimeout(() => {
+      setCreationResult({
+        id: 'rev-' + Math.random().toString(36).substr(2, 9),
+        companyName,
+        sector,
+        styleMode,
+        hypnoticPowerScore: 14.8,
+        revolutionLevel: 15,
+        predictedReaction: "BORDEL, C'EST QUOI ÇA ? JE VEUX ÇA À TOUT PRIX !",
+        previewUrl: '/api/v1/preview/rev-123',
+        backupAlternativesCount: 3
+      });
+      
+      setIsLoading(false);
+      setProgress(100);
+    }, 500);
+  };
+  
+  // Soumettre le feedback
+  const submitFeedback = () => {
+    if (!feedback.trim()) return;
+    
+    // Simuler l'envoi du feedback
+    console.log('Feedback soumis:', feedback);
+    setFeedback('');
+    setShowFeedback(false);
+    
+    // Afficher une confirmation
+    alert('Merci pour votre feedback ! Le système apprend continuellement.');
+  };
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white overflow-hidden">
+      {/* Particules en arrière-plan */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {[...Array(30)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-purple-500 opacity-20"
+            style={{
+              width: Math.random() * 20 + 5,
+              height: Math.random() * 20 + 5,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              x: [0, Math.random() * 100 - 50],
+              y: [0, Math.random() * 100 - 50],
+              opacity: [0.1, 0.3, 0.1],
+            }}
+            transition={{
+              duration: Math.random() * 10 + 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* En-tête */}
+      <header className="container mx-auto px-4 py-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center"
+        >
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-500"
+            animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          >
+            LIVING BRANDING AI
+          </motion.h1>
+          <motion.p 
+            className="text-xl md:text-2xl text-purple-200 max-w-3xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            Transformez votre entreprise en univers de branding hypnotique et révolutionnaire
+          </motion.p>
+        </motion.div>
+      </header>
+      
+      <main className="container mx-auto px-4 py-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Formulaire de création */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 border border-purple-500 border-opacity-30 shadow-2xl"
+          >
+            <h2 className="text-3xl font-bold mb-6 text-purple-300">Créer votre marque révolutionnaire</h2>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-lg mb-2 text-purple-200">Nom de l'entreprise</label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  className="w-full bg-gray-700 bg-opacity-70 border border-purple-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                  placeholder="Ex: QuantumNova"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-lg mb-2 text-purple-200">Secteur d'activité</label>
+                <select
+                  value={sector}
+                  onChange={(e) => setSector(e.target.value)}
+                  className="w-full bg-gray-700 bg-opacity-70 border border-purple-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                >
+                  <option value="">Sélectionnez un secteur</option>
+                  {sectors.map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-lg mb-2 text-purple-200">Mode de style</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {styleModes.map((mode) => (
+                    <motion.div
+                      key={mode.value}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`p-4 rounded-xl cursor-pointer transition-all ${
+                        styleMode === mode.value
+                          ? 'bg-purple-600 bg-opacity-50 border-2 border-purple-400'
+                          : 'bg-gray-700 bg-opacity-50 border border-purple-500 border-opacity-30'
+                      }`}
+                      onClick={() => setStyleMode(mode.value)}
+                    >
+                      <h3 className="font-bold text-lg">{mode.label}</h3>
+                      <p className="text-sm text-purple-200 mt-1">{mode.description}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-lg mb-2 text-purple-200">Watermark personnalisé (optionnel)</label>
+                <input
+                  type="text"
+                  value={watermark}
+                  onChange={(e) => setWatermark(e.target.value)}
+                  className="w-full bg-gray-700 bg-opacity-70 border border-purple-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+                  placeholder="Ex: Created by LivingBrandingAI"
+                />
+              </div>
+              
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isLoading || !companyName || !sector}
+                className={`w-full py-4 px-6 rounded-xl text-lg font-bold transition-all ${
+                  isLoading || !companyName || !sector
+                    ? 'bg-gray-600 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-500/30'
+                }`}
+                onClick={createRevolutionaryBrand}
+              >
+                {isLoading ? 'Création en cours...' : 'CRÉER MONDE DE MARQUE RÉVOLUTIONNAIRE'}
+              </motion.button>
+            </div>
+            
+            {/* Progression de création */}
+            {isLoading && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="mt-8"
+              >
+                <div className="flex justify-between mb-2">
+                  <span className="text-purple-300">{currentPhase}</span>
+                  <span className="text-purple-300">{progress}%</span>
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-4">
+                  <motion.div
+                    className="bg-gradient-to-r from-purple-500 to-indigo-500 h-4 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <p className="text-sm text-purple-200 mt-4 text-center">
+                  Le monstre créatif est en train de forger votre univers de branding...
+                </p>
+              </motion.div>
+            )}
+          </motion.div>
+          
+          {/* Aperçu 3D */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative"
+          >
+            <div className="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-4 border border-purple-500 border-opacity-30 shadow-2xl h-[500px]">
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                <canvas ref={canvasRef} className="w-full h-full" />
+              </div>
+              
+              {!creationResult && !isLoading && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.05, 1],
+                      rotate: [0, 5, 0, -5, 0]
+                    }}
+                    transition={{ 
+                      duration: 6, 
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                    className="text-6xl mb-6"
+                  >
+                    ✨
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-purple-300 mb-2">Votre univers de branding apparaîtra ici</h3>
+                  <p className="text-purple-200 max-w-md">
+                    Créez une marque révolutionnaire pour voir une preview hypnotique en 3D
+                  </p>
+                </div>
+              )}
+              
+              {creationResult && (
+                <div className="absolute bottom-4 left-4 right-4 bg-gray-900 bg-opacity-70 backdrop-blur rounded-xl p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-bold text-lg">{creationResult.companyName}</h3>
+                      <p className="text-sm text-purple-300">{creationResult.sector} • {styleModes.find(m => m.value === creationResult.styleMode)?.label}</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center">
+                        <span className="text-yellow-400 mr-1">★</span>
+                        <span className="font-bold">{creationResult.hypnoticPowerScore}/15</span>
+                      </div>
+                      <p className="text-xs text-purple-300">Pouvoir hypnotique</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+        
+        {/* Résultats de création */}
+        <AnimatePresence>
+          {creationResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              transition={{ duration: 0.8 }}
+              className="mt-16 bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 border border-purple-500 border-opacity-30 shadow-2xl"
+            >
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <div>
+                  <h2 className="text-3xl font-bold text-purple-300 mb-2">Univers de Branding Créé</h2>
+                  <p className="text-lg text-purple-200">
+                    Votre marque révolutionnaire est prête à hypnotiser votre audience
+                  </p>
+                </div>
+                
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-4 md:mt-0 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl font-bold flex items-center"
+                  onClick={() => setShowFeedback(true)}
+                >
+                  <span className="mr-2">💬</span> Donner votre feedback
+                </motion.button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-gray-900 bg-opacity-50 p-6 rounded-xl border border-purple-500 border-opacity-20">
+                  <div className="text-3xl font-bold text-purple-400 mb-2">{creationResult.hypnoticPowerScore}/15</div>
+                  <div className="text-lg font-semibold mb-1">Pouvoir Hypnotique</div>
+                  <div className="text-sm text-purple-200">Capacité à fasciner votre audience</div>
+                </div>
+                
+                <div className="bg-gray-900 bg-opacity-50 p-6 rounded-xl border border-purple-500 border-opacity-20">
+                  <div className="text-3xl font-bold text-purple-400 mb-2">{creationResult.revolutionLevel}/15</div>
+                  <div className="text-lg font-semibold mb-1">Niveau de Révolution</div>
+                  <div className="text-sm text-purple-200">Innovation et disruption</div>
+                </div>
+                
+                <div className="bg-gray-900 bg-opacity-50 p-6 rounded-xl border border-purple-500 border-opacity-20">
+                  <div className="text-3xl font-bold text-purple-400 mb-2">{creationResult.backupAlternativesCount}</div>
+                  <div className="text-lg font-semibold mb-1">Alternatives Backup</div>
+                  <div className="text-sm text-purple-200">Options créatives supplémentaires</div>
+                </div>
+              </div>
+              
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-purple-300 mb-4">Réaction CEO Prédite</h3>
+                <div className="bg-gray-900 bg-opacity-50 p-6 rounded-xl border border-purple-500 border-opacity-20">
+                  <div className="text-xl font-bold text-yellow-400 italic">
+                    "{creationResult.predictedReaction}"
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-bold text-purple-300 mb-4">Options de Prévisualisation</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {['Static_Hero', 'Animated_Reveal', 'Interactive_3D', 'Full_Universe'].map((preview) => (
+                    <motion.div
+                      key={preview}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`p-4 rounded-xl cursor-pointer transition-all ${
+                        currentPreview === preview
+                          ? 'bg-purple-600 bg-opacity-50 border-2 border-purple-400'
+                          : 'bg-gray-700 bg-opacity-50 border border-purple-500 border-opacity-30'
+                      }`}
+                      onClick={() => setCurrentPreview(preview)}
+                    >
+                      <div className="text-center">
+                        <div className="text-2xl mb-2">
+                          {preview === 'Static_Hero' && '🖼️'}
+                          {preview === 'Animated_Reveal' && '🎬'}
+                          {preview === 'Interactive_3D' && '🕹️'}
+                          {preview === 'Full_Universe' && '🌌'}
+                        </div>
+                        <div className="font-medium">{preview.replace('_', ' ')}</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        {/* Modal de feedback */}
+        <AnimatePresence>
+          {showFeedback && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50"
+              onClick={() => setShowFeedback(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.8, y: 50 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="bg-gray-800 rounded-2xl p-8 max-w-md w-full border border-purple-500 border-opacity-30"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-2xl font-bold text-purple-300 mb-4">Votre Feedback</h3>
+                <p className="text-purple-200 mb-6">
+                  Votre feedback aide notre système à apprendre et à devenir encore plus révolutionnaire.
+                </p>
+                
+                <textarea
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                  className="w-full bg-gray-700 bg-opacity-70 border border-purple-500 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition mb-6"
+                  rows={4}
+                  placeholder="Qu'avez-vous pensé de cette création ? Comment pourrions-nous l'améliorer ?"
+                />
+                
+                <div className="flex justify-end space-x-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 bg-gray-700 rounded-xl font-bold"
+                    onClick={() => setShowFeedback(false)}
+                  >
+                    Annuler
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl font-bold"
+                    onClick={submitFeedback}
+                    disabled={!feedback.trim()}
+                  >
+                    Soumettre
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
+      
+      {/* Pied de page */}
+      <footer className="container mx-auto px-4 py-8 relative z-10 text-center text-purple-300">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+        >
+          <p>© {new Date().getFullYear()} LIVING BRANDING AI - Le système de branding le plus révolutionnaire au monde</p>
+          <p className="mt-2 text-sm">Niveau de folie: 15/10 • Puissance hypnotique: Maximale</p>
+        </motion.div>
+      </footer>
+    </div>
+  );
+};
+
+export default UltimateLivingBrandingFrontend;
