@@ -5,8 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
-import { BrowserRouter, Routes } from "react-router-dom";
-import { QueryClient } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { globalQuantumOrchestrator } from "@/lib/quantum-frontend-core";
@@ -228,17 +227,6 @@ class AutonomousAppIntelligence {
 // Instance globale de l'intelligence app
 const globalAppIntelligence = new AutonomousAppIntelligence();
 
-const queryClient = new QueryClient();
-
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
 function App() {
   const [quantumOrchestrator] = useState(() => globalQuantumOrchestrator);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -270,7 +258,7 @@ function App() {
     return () => {
       observer.disconnect();
     };
-  }, [appIntelligence]);
+  }, [globalAppIntelligence]);
 
   // Hook pour enregistrer les changements de route avec synchronisation backend
   useEffect(() => {
@@ -296,13 +284,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <div className="min-h-screen bg-background">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
-        <Toaster />
+        <TooltipProvider>
+          <div className="min-h-screen bg-background">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Toaster />
+        </TooltipProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
